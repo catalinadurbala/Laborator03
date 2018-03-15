@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 public class PhoneDialerActivity extends AppCompatActivity {
 
@@ -20,6 +21,7 @@ public class PhoneDialerActivity extends AppCompatActivity {
     private ImageButton callImageButton;
     private ImageButton hangupImageButton;
     private ImageButton backspaceImageButton;
+    private ImageButton contactsImageButton;
     private Button genericButton;
 
     private int[] buttonIds = {
@@ -38,6 +40,7 @@ public class PhoneDialerActivity extends AppCompatActivity {
     };
 
     final public static int PERMISSION_REQUEST_CALL_PHONE = 1;
+    final public static int CONTACTS_MANAGER_REQUEST_CODE = 2017;
 
     private CallButtonClickListener callButtonClickListener = new CallButtonClickListener();
     private class CallButtonClickListener implements View.OnClickListener {
@@ -78,6 +81,22 @@ public class PhoneDialerActivity extends AppCompatActivity {
         }
     }
 
+    private ContactsButtonClickListener contactsButtonClickListener = new ContactsButtonClickListener();
+    private class ContactsButtonClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View view) {
+            String phoneNumber = phoneNumberEditText.getText().toString();
+            if (phoneNumber.length() > 0) {
+                Intent intent = new Intent("ro.pub.cs.systems.eim.lab04.contactsmanager.intent.action.ContactsManagerActivity");
+                intent.putExtra("ro.pub.cs.systems.eim.lab04.contactsmanager.PHONE_NUMBER_KEY", phoneNumber);
+                startActivityForResult(intent, CONTACTS_MANAGER_REQUEST_CODE);
+            } else {
+                Toast.makeText(getApplication(), "Phone number is empty!", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
     private GenericButtonClickListener genericButtonClickListener = new GenericButtonClickListener();
     private class GenericButtonClickListener implements View.OnClickListener {
 
@@ -109,5 +128,8 @@ public class PhoneDialerActivity extends AppCompatActivity {
             genericButton = findViewById(id);
             genericButton.setOnClickListener(genericButtonClickListener);
         }
+
+        contactsImageButton = findViewById(R.id.contacts_call_button);
+        contactsImageButton.setOnClickListener(contactsButtonClickListener);
     }
 }
